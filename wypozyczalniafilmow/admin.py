@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Genre, Author, Book
+from .models import Genre, Director, Movie
 
 admin.site.register(Genre)
 admin.site.register(Director)
