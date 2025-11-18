@@ -35,17 +35,25 @@ class Director(models.Model):
     country = models.CharField(max_length=2, help_text="Kod kraju, np. PL, US, GB")
 
     def __str__(self):
-        return f"{self.first_name} {self.last_name}"
+        return f"{self.first_name} {self.last_name}" 
+
+
+class ProductionYear(models.Model):
+    """Model reprezentujący rok produkcji filmu."""
+    year = models.PositiveSmallIntegerField(help_text="Rok produkcji filmu.")
+
+    def __str__(self):
+        return str(self.year)
 
 
 class Movie(models.Model):
     """Model reprezentujący film w wypożyczalni."""
-    title = models.CharField(max_length=100)
-    release_year = models.PositiveSmallIntegerField(help_text="Rok premiery filmu.")
+    title = models.CharField(max_length=100, help_text="Tytuł filmu.")
+    production_year = models.ForeignKey(ProductionYear, null=True, blank=False, on_delete=models.SET_NULL, help_text="Rok produkcji filmu.")
     duration_minutes = models.PositiveIntegerField(help_text="Czas trwania filmu w minutach.")  
-    movie_format = models.CharField(max_length=3, choices=MOVIE_FORMATS, default='W')
-    director = models.ForeignKey(Director, null=True, blank=False, on_delete=models.SET_NULL)
-    genre = models.ForeignKey(Genre, null=True, blank=False, on_delete=models.SET_NULL)
+    movie_format = models.CharField(max_length=3, choices=MOVIE_FORMATS, default='W', help_text="Format filmu.")
+    director = models.ForeignKey(Director, null=True, blank=False, on_delete=models.SET_NULL, help_text="Reżyser filmu.")
+    genre = models.ForeignKey(Genre, null=True, blank=False, on_delete=models.SET_NULL, help_text="Gatunek filmowy.")
 
     def __str__(self):
         return self.title
