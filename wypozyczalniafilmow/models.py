@@ -64,11 +64,10 @@ class Movie(models.Model):
     
     def is_rented(self):
         """Sprawdza, czy film jest aktualnie wypożyczony."""
-        try:
-            self.renting_customer 
-            return "Wypożyczony"
-        except Customer.DoesNotExist:   
-            return "Dostępny"
+        active_rentals = self.rental_set.filter(return_date__isnull=True).first()
+        return "Wypożyczony" if active_rentals else "Dostępny"
+     
+
        
 
 class Customer(models.Model):
@@ -76,14 +75,26 @@ class Customer(models.Model):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     plec = models.CharField(max_length=1, choices=PLEC_WYBOR, default='I', help_text="Płeć klienta.")
-    rented_movie = models.OneToOneField(Movie, null=True, blank=True, on_delete=models.SET_NULL, 
-        related_name = 'renting_customer', 
-        help_text= "Film aktualnie wypożyczony przez klienta.")
+    data_dodania = models.DateTimeField(auto_now_add=True, help_text="Data i godzina dodania klienta do systemu.")
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}" 
 
     def is_renting(self):
         """Sprawdza, czy klient aktualnie wypożycza film."""
-        return "Wypożycza" if self.rented_movie else "Wolny"
+        active_rental = self.rental_set.filter(return_date__isnull=True).first()
+        if active_rental:
+            return active_rental.movie.title
+        return "Brak wypożyczonych filmów"
+
+
+class Rental(models.Model):
+    """Model reprezentujący historię wypożyczeń filmów przez klientów."""
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, help_text="Klient wypożyczający film.")
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, help_text="Wypożyczony film.")
+    rental_date = models.DateTimeField(auto_now_add=True, help_text="Data i godzina wypożyczenia filmu.")
+    return_date = models.DateTimeField(null=True, blank=True, help_text="Data i godzina zwrotu filmu.")
+
+    def __str__(self):
+        return f"{self.customer} wypożyczył {self.movie.title} dnia {self.rental_date}"
 
