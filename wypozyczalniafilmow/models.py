@@ -7,7 +7,11 @@ MOVIE_FORMATS = (
     ('W', 'Wersja cyfrowa'),
     ('VHS', 'Kaseta VHS'),
 )
-
+PLEC_WYBOR = (
+    ('M', 'Mężczyzna'),
+    ('K', 'Kobieta'),
+    ('I', 'Inna'),
+)
 
 class Genre(models.Model):
     """Model reprezentujący gatunek filmowy."""
@@ -54,8 +58,43 @@ class Movie(models.Model):
     movie_format = models.CharField(max_length=3, choices=MOVIE_FORMATS, default='W', help_text="Format filmu.")
     director = models.ForeignKey(Director, null=True, blank=False, on_delete=models.SET_NULL, help_text="Reżyser filmu.")
     genre = models.ForeignKey(Genre, null=True, blank=False, on_delete=models.SET_NULL, help_text="Gatunek filmowy.")
+   
+    def __str__(self):
+        return self.title 
+    
+    def is_rented(self):
+        """Sprawdza, czy film jest aktualnie wypożyczony."""
+        active_rentals = self.rental_set.filter(return_date__isnull=True).first()
+        return "Wypożyczony" if active_rentals else "Dostępny"
+     
+
+       
+
+class Customer(models.Model):
+    """Model reprezentujący klienta wypożyczalni i film który aktualnie wypożycza."""
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+    plec = models.CharField(max_length=1, choices=PLEC_WYBOR, default='I', help_text="Płeć klienta.")
+    data_dodania = models.DateTimeField(auto_now_add=True, help_text="Data i godzina dodania klienta do systemu.")
 
     def __str__(self):
-        return self.title
+        return f"{self.first_name} {self.last_name}" 
 
-# Create your models here.
+    def is_renting(self):
+        """Sprawdza, czy klient aktualnie wypożycza film."""
+        active_rental = self.rental_set.filter(return_date__isnull=True).first()
+        if active_rental:
+            return active_rental.movie.title
+        return "Brak wypożyczonych filmów"
+
+
+class Rental(models.Model):
+    """Model reprezentujący historię wypożyczeń filmów przez klientów."""
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, help_text="Klient wypożyczający film.")
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, help_text="Wypożyczony film.")
+    rental_date = models.DateTimeField(auto_now_add=True, help_text="Data i godzina wypożyczenia filmu.")
+    return_date = models.DateTimeField(null=True, blank=True, help_text="Data i godzina zwrotu filmu.")
+
+    def __str__(self):
+        return f"{self.customer} wypożyczył {self.movie.title} dnia {self.rental_date}"
+
