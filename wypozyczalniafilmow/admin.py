@@ -2,8 +2,8 @@ from django.contrib import admin
 from .models import Genre, Director, ProductionYear, Movie, Customer, Rental
 
 class GenreAdmin(admin.ModelAdmin):
-    list_display = ('name',)
-    search_fields = ('name',)
+    list_display = ('name', 'typical_themes', 'is_documentary', 'popularity_rank')
+    search_fields = ('name', 'typical_themes')
 admin.site.register(Genre, GenreAdmin)
 
 class DirectorAdmin(admin.ModelAdmin):
