@@ -22,7 +22,7 @@ class Genre(models.Model):
         blank=True,
         help_text="Typowe motywy i tematy występujące w tym gatunku."
     )
-    is_documentary = models.BooleanField(default=True, help_text="Czy gatunek jest dokumentalny?")
+    is_documentary = models.BooleanField(default=False, help_text="Czy gatunek jest dokumentalny?")
     popularity_rank = models.PositiveSmallIntegerField(
         default=0,
         help_text="Ocena popularności (0–10) według oglądaczy."
