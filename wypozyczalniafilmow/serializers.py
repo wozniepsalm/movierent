@@ -1,8 +1,10 @@
 from rest_framework import serializers
 from .models import Genre, Director, ProductionYear, Movie, Customer, Rental, PLEC_WYBOR, MOVIE_FORMATS
 from django.core.exeptions import ValidationError
-from rest_framework.validators import UniqueTogetherValidator
+from rest_framework.validators import UniqueTogetherValidator, MaxValueValidator, MinValueValidator
+from datetime import date
 
+CURRENT_YEAR = date.today().year
 
 class MovieSerializer(serializers.Serializer): 
     """Serializer dla modelu Movie."""
@@ -59,20 +61,49 @@ class DirectorSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Kod kraju musi składać się z dwóch wielkich liter.")
         return data 
 
-def multiple_of_two(value):
-    if value % 2 != 0:
-        raise serializers.ValidationError("Ocena popularności musi być wielokrotnością 2 (np. 0, 2, 4, 6, 8, 10).")
+
 
 class GenreSerializer(serializers.ModelSerializer):
     """Serializer dla modelu Genre."""
-    popularity_rank = serializers.IntegerField(validators= [multiple_of_two])
+    popularity_rank = serializers.IntegerField(validators= [multiple_of_two, MinValueValidator(0), MaxValueValidator(10)])
     class Meta:
         model = Genre
         fields = '__all__'
 
 class ProductionYearSerializer(serializers.ModelSerializer):
-    """Serializer dla modelu ProductionYear."""
+    """Serializer dla modelu ProductionYear.""" 
+    year = serializers.IntegerField(validators=[MinValueValidator(1888, message = "rok nie może być mniejszy niż 1888(pierwszy film)"), MaxValueValidator(CURRENT_YEAR, message = "rok nie może być większy niż bieżący rok")])
     class Meta:
         model = ProductionYear
-        fields = ['id', 'year']
+        fields = ['id', 'year'] 
+
+class CustomerSerializer(serializers.ModelSerializer):
+    """Serializer dla modelu Customer."""
+    class Meta:
+        model = Customer
+        fields = '__all__'
+    
+    def validate_imie(self, value):
+        if not (value[0].isupper() and value.isalpha()):
+            raise serializers.ValidationError("Imię powininno zawierać tylko litery i rozpoczynać się wielką literą.")
+        return value
+    def validate_nazwisko(self, value):
+        if not (value[0].isupper() and value.isalpha()):
+            raise serializers.ValidationError("Nazwisko powininno zawierać tylko litery i rozpoczynać się wielką literą.")
+        return value 
+
+class RentalSerializer(serializers.ModelSerializer):
+    """Serializer dla modelu Rental."""
+    class Meta:
+        model = Rental
+        fields = '__all__'
+    
+    def validate(self, data):
+        """walidacja całego obiektu wypożyczenia."""
+        rental_date = data.get('rental_date')
+        return_date = data.get('return_date')
+
+        if return_date and rental_date and return_date < rental_date:
+            raise serializers.ValidationError("Data zwrotu nie może być wcześniejsza niż data wypożyczenia.")
+        return data
 
