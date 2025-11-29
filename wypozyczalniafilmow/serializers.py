@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Genre, Director, ProductionYear, Movie, Customer, Rental, PLEC_WYBOR, MOVIE_FORMATS
-from django.core.exeptions import ValidationError
+from django.core.exceptions import ValidationError
 from rest_framework.validators import UniqueTogetherValidator, MaxValueValidator, MinValueValidator
 from datetime import date
 
@@ -65,7 +65,7 @@ class DirectorSerializer(serializers.ModelSerializer):
 
 class GenreSerializer(serializers.ModelSerializer):
     """Serializer dla modelu Genre."""
-    popularity_rank = serializers.IntegerField(validators= [multiple_of_two, MinValueValidator(0), MaxValueValidator(10)])
+    popularity_rank = serializers.IntegerField(validators= [MinValueValidator(0), MaxValueValidator(10)])
     class Meta:
         model = Genre
         fields = '__all__'
@@ -83,11 +83,11 @@ class CustomerSerializer(serializers.ModelSerializer):
         model = Customer
         fields = '__all__'
     
-    def validate_imie(self, value):
+    def validate_first_name(self, value):
         if not (value[0].isupper() and value.isalpha()):
             raise serializers.ValidationError("Imię powininno zawierać tylko litery i rozpoczynać się wielką literą.")
         return value
-    def validate_nazwisko(self, value):
+    def validate_last_name(self, value):
         if not (value[0].isupper() and value.isalpha()):
             raise serializers.ValidationError("Nazwisko powininno zawierać tylko litery i rozpoczynać się wielką literą.")
         return value 
@@ -100,10 +100,12 @@ class RentalSerializer(serializers.ModelSerializer):
     
     def validate(self, data):
         """walidacja całego obiektu wypożyczenia."""
-        rental_date = data.get('rental_date')
         return_date = data.get('return_date')
+        if self.instance:
+            rental_date = self.instance.rental_date
+        else:
+            rental_date = timezone.now() 
 
         if return_date and rental_date and return_date < rental_date:
             raise serializers.ValidationError("Data zwrotu nie może być wcześniejsza niż data wypożyczenia.")
         return data
-
