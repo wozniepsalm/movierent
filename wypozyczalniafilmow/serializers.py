@@ -3,6 +3,7 @@ from .models import Genre, Director, ProductionYear, Movie, Customer, Rental, PL
 from django.core.exceptions import ValidationError
 from rest_framework.validators import UniqueTogetherValidator, MaxValueValidator, MinValueValidator
 from datetime import date
+from django.utils import timezone
 
 CURRENT_YEAR = date.today().year
 
