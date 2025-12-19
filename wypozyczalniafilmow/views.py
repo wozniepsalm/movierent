@@ -3,7 +3,6 @@ from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnl
 from django.shortcuts import render
 from django.http import HttpResponse
 import datetime
-
 from .models import Genre, Director, ProductionYear, Movie, Customer, Rental
 from .serializers import GenreSerializer, DirectorSerializer, ProductionYearSerializer, MovieSerializer, CustomerSerializer, RentalSerializer
 
