@@ -1,10 +1,11 @@
 from rest_framework import generics, filters
-from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, IsAdminUser, AllowAny
 from django.shortcuts import render
 from django.http import HttpResponse
 import datetime
 from .models import Genre, Director, ProductionYear, Movie, Customer, Rental
-from .serializers import GenreSerializer, DirectorSerializer, ProductionYearSerializer, MovieSerializer, CustomerSerializer, RentalSerializer
+from django.contrib.auth.models import User
+from .serializers import GenreSerializer, DirectorSerializer, ProductionYearSerializer, MovieSerializer, CustomerSerializer, RentalSerializer, UserRegisterSerializer
 
 
 
@@ -52,7 +53,8 @@ class MovieList(generics.ListCreateAPIView):
 class MovieDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Movie.objects.all()
     serializer_class = MovieSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAdminUser]
+
 
 class CustomerList(generics.ListCreateAPIView):
     queryset = Customer.objects.all()
@@ -108,6 +110,10 @@ def welcome_view(request):
     """
     return HttpResponse(html)
 
+class UserRegisterView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserRegisterSerializer
+    permission_classes = [AllowAny] 
 
 
 

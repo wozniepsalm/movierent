@@ -1,7 +1,8 @@
 from rest_framework import serializers
 from .models import Genre, Director, ProductionYear, Movie, Customer, Rental, PLEC_WYBOR, MOVIE_FORMATS
 from django.core.exceptions import ValidationError
-from rest_framework.validators import UniqueTogetherValidator, MaxValueValidator, MinValueValidator
+from rest_framework.validators import UniqueTogetherValidator
+from django.core.validators import MaxValueValidator, MinValueValidator
 from datetime import date
 from django.utils import timezone
 from django.contrib.auth.models import User
