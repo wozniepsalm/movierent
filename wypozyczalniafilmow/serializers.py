@@ -13,7 +13,7 @@ class MovieSerializer(serializers.ModelSerializer):
     """Serializer dla modelu Movie."""
     director_name = serializers.StringRelatedField(source='director', read_only=True)
     genre_name = serializers.StringRelatedField(source= 'genre', read_only=True)
-    production_year = serializers.StringRelatedField(source='production_year', read_only=True)
+    production_year = serializers.StringRelatedField(read_only=True)
 
     class Meta:
         model = Movie
