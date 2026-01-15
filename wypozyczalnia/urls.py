@@ -16,10 +16,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include 
-from wypozyczalniafilmow.views import welcome_view
+from rest_framework.authtoken.views import obtain_auth_token
 
 urlpatterns = [
-    path('', welcome_view, name='home'),
     path('admin/', admin.site.urls),
     path('api/', include('wypozyczalniafilmow.urls')),
 ]

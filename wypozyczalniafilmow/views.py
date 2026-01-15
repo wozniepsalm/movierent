@@ -6,9 +6,6 @@ import datetime
 from .models import Genre, Director, ProductionYear, Movie, Customer, Rental
 from django.contrib.auth.models import User
 from .serializers import GenreSerializer, DirectorSerializer, ProductionYearSerializer, MovieSerializer, CustomerSerializer, RentalSerializer, UserRegisterSerializer
-from rest_framework.authtoken.views import ObtainAuthToken
-from rest_framework.authtoken.models import Token
-from rest_framework.response import Response
 
 class GenreList(generics.ListCreateAPIView):
     queryset = Genre.objects.all()
@@ -98,39 +95,12 @@ class DirectorMoviesList(generics.ListAPIView):
 
 
 
-def welcome_view(request):
-    now = datetime.datetime.now()
-    html = f"""
-        <html>
-            <head><title>Wypożyczalnia</title></head>
-            <body>
-                <h1>Witaj w MovieRent!</h1>
-                <p>Aktualna data serwera: {now}</p>
-            </body>
-        </html>
-    """
-    return HttpResponse(html)
 
 class UserRegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserRegisterSerializer
     permission_classes = [AllowAny] 
 
-class CustomAuthToken(ObtainAuthToken):
-    """ tak żeby widok logowania byl w przegladarce """
-    def get(self, request, *args, **kwargs):
-        return Response({'message': 'Użyj formularza poniżej, aby się zalogować i uzyskać token.'})
-
-    def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data, context={'request': request})
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
-        token, created = Token.objects.get_or_create(user=user)
-        return Response({
-            'token': token.key,
-            'user_id': user.pk,
-            'email': user.email
-        })
 
 
 
