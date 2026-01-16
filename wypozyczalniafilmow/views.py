@@ -51,7 +51,7 @@ class MovieList(generics.ListCreateAPIView):
 class MovieDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Movie.objects.all()
     serializer_class = MovieSerializer
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
 
 class CustomerList(generics.ListCreateAPIView):

@@ -1,7 +1,7 @@
 from django.db import models
 
 
-# Lista wyboru formatu filmów
+
 MOVIE_FORMATS = (
     ('CD', 'Płyta CD'),
     ('W', 'Wersja cyfrowa'),
@@ -86,6 +86,8 @@ class Customer(models.Model):
         if active_rental:
             return active_rental.movie.title
         return "Brak wypożyczonych filmów"
+
+
 
 
 class Rental(models.Model):
