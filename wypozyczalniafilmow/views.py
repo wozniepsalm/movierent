@@ -1,4 +1,4 @@
-from rest_framework import generics, filters
+from rest_framework import generics, filters, permissions
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, IsAdminUser, AllowAny
 from django.shortcuts import render
 from django.http import HttpResponse
@@ -39,6 +39,18 @@ class ProductionYearDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ProductionYearSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
 
+class IsAdminOrReadOnly(permissions.BasePermission):
+    """
+    - zalogowani users (pracownicy) mogą oglądać (GET)
+    - tylko admin może edytować lub usuwać (PUT, DELETE)
+    """
+    def has_permission(self, request, view):
+        if not request.user or not request.user.is_authenticated:
+            return False
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        return request.user.is_staff
+
 
 
 class MovieList(generics.ListCreateAPIView):
@@ -51,7 +63,7 @@ class MovieList(generics.ListCreateAPIView):
 class MovieDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Movie.objects.all()
     serializer_class = MovieSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAdminOrReadOnly]
 
 
 class CustomerList(generics.ListCreateAPIView):

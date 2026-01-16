@@ -13,8 +13,8 @@ class MovieSerializer(serializers.ModelSerializer):
     """Serializer dla modelu Movie."""
     director_name = serializers.StringRelatedField(source='director', read_only=True)
     genre_name = serializers.StringRelatedField(source= 'genre', read_only=True)
-    production_year = serializers.StringRelatedField(read_only=True)
-
+    production_year_value = serializers.StringRelatedField(source= 'production_year', read_only=True)
+    
     class Meta:
         model = Movie
         fields = '__all__'
@@ -24,7 +24,7 @@ class MovieSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Tytuł filmu musi zaczynać się wielką literą.")
         return value
 
-    def validate_duration(self, value):
+    def validate_duration_minutes(self, value):
         if value <= 0:
             raise serializers.ValidationError("Czas trwania filmu musi być większy niż 0 minut.")
         return value
