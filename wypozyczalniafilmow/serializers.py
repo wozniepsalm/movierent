@@ -14,7 +14,7 @@ class MovieSerializer(serializers.ModelSerializer):
     director_name = serializers.StringRelatedField(source='director', read_only=True)
     genre_name = serializers.StringRelatedField(source= 'genre', read_only=True)
     production_year_value = serializers.StringRelatedField(source= 'production_year', read_only=True)
-    available_copies = serializers.IntegerField(source='available_copies', read_only=True)
+    available_copies_nr = serializers.IntegerField(source='available_copies', read_only=True)
 
     class Meta:
         model = Movie
