@@ -14,7 +14,8 @@ class MovieSerializer(serializers.ModelSerializer):
     director_name = serializers.StringRelatedField(source='director', read_only=True)
     genre_name = serializers.StringRelatedField(source= 'genre', read_only=True)
     production_year_value = serializers.StringRelatedField(source= 'production_year', read_only=True)
-    
+    available_copies = serializers.IntegerField(source='available_copies', read_only=True)
+
     class Meta:
         model = Movie
         fields = '__all__'
@@ -103,7 +104,14 @@ class RentalSerializer(serializers.ModelSerializer):
 
         if return_date and rental_date and return_date < rental_date:
             raise serializers.ValidationError("Data zwrotu nie może być wcześniejsza niż data wypożyczenia.")
-        return data
+        return data 
+
+        if not self.instance:
+            movie = data.get('movie')
+            if movie and movie.available_copies() <= 0:
+                raise serializers.ValidationError("Brak dostępnych kopii filmu do wypożyczenia.")
+
+
 
 class UserRegisterSerializer(serializers.ModelSerializer):
     """Serializer do zarejestrowania użytkownika."""

@@ -58,7 +58,13 @@ class Movie(models.Model):
     movie_format = models.CharField(max_length=3, choices=MOVIE_FORMATS, default='W', help_text="Format filmu.")
     director = models.ForeignKey(Director, null=True, blank=False, on_delete=models.SET_NULL, help_text="Reżyser filmu.")
     genre = models.ForeignKey(Genre, null=True, blank=False, on_delete=models.SET_NULL, help_text="Gatunek filmowy.")
-   
+    number_copies = models.PositiveIntegerField(default=1, help_text="Cała liczba kopii filmu w wypożyczalni.")
+
+    def available_copies(self):
+        """oblicza liczbę dostępnych kopii filmu"""
+        total_rented = self.rental_set.filter(return_date__isnull=True).count()
+        return self.number_copies - total_rented
+    
     def __str__(self):
         return self.title 
     
