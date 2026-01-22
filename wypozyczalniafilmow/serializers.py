@@ -104,12 +104,12 @@ class RentalSerializer(serializers.ModelSerializer):
 
         if return_date and rental_date and return_date < rental_date:
             raise serializers.ValidationError("Data zwrotu nie może być wcześniejsza niż data wypożyczenia.")
-        return data 
-
+        
         if not self.instance:
             movie = data.get('movie')
             if movie and movie.available_copies() <= 0:
                 raise serializers.ValidationError("Brak dostępnych kopii filmu do wypożyczenia.")
+        return data
 
 
 
