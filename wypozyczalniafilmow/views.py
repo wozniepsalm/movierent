@@ -6,6 +6,21 @@ import datetime
 from .models import Genre, Director, ProductionYear, Movie, Customer, Rental
 from django.contrib.auth.models import User
 from .serializers import GenreSerializer, DirectorSerializer, ProductionYearSerializer, MovieSerializer, CustomerSerializer, RentalSerializer, UserRegisterSerializer
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework.reverse import reverse
+
+@api_view(['GET'])
+def api_root(request, format=None):
+    return Response({
+        'movies': reverse('movie-list', request=request, format=format),
+        'genres': reverse('genre-list', request=request, format=format),
+        'directors': reverse('director-list', request=request, format=format),
+        'customers': reverse('customer-list', request=request, format=format),
+        'rentals': reverse('rental-list', request=request, format=format),
+        'active-rentals': reverse('active-rentals', request=request, format=format),
+        'register': reverse('register', request=request, format=format),
+    })
 
 class GenreList(generics.ListCreateAPIView):
     queryset = Genre.objects.all()
