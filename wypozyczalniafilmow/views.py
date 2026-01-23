@@ -16,6 +16,7 @@ def api_root(request, format=None):
         'movies': reverse('movie-list', request=request, format=format),
         'genres': reverse('genre-list', request=request, format=format),
         'directors': reverse('director-list', request=request, format=format),
+        'production_years': reverse('productionyear-list', request=request, format=format),
         'customers': reverse('customer-list', request=request, format=format),
         'rentals': reverse('rental-list', request=request, format=format),
         'active-rentals': reverse('active-rentals', request=request, format=format),
@@ -37,7 +38,7 @@ class DirectorList(generics.ListCreateAPIView):
     serializer_class = DirectorSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
     filter_backends = [filters.SearchFilter]
-    search_fields = ['last_name']
+    search_fields = ['first_name', 'last_name']
 
 class DirectorDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Director.objects.all()
@@ -73,7 +74,7 @@ class MovieList(generics.ListCreateAPIView):
     serializer_class = MovieSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
     filter_backends = [filters.SearchFilter]
-    search_fields = ['title']
+    search_fields = ['title', 'director__first_name', 'director__last_name', 'genre__name', 'production_year__year']
 
 class MovieDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Movie.objects.all()
@@ -86,7 +87,7 @@ class CustomerList(generics.ListCreateAPIView):
     serializer_class = CustomerSerializer
     permission_classes = [IsAuthenticated]
     filter_backends = [filters.SearchFilter]
-    search_fields = ['last_name']
+    search_fields = ['first_name', 'last_name']
 
 class CustomerDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Customer.objects.all()

@@ -26,4 +26,7 @@ urlpatterns = [
     
     path('directors/', views.DirectorList.as_view(), name='director-list'),
     path('directors/<int:pk>/', views.DirectorDetail.as_view(), name='director-detail'),
+
+    path('production_years/', views.ProductionYearList.as_view(), name='productionyear-list'),
+    path('production_years/<int:pk>/', views.ProductionYearDetail.as_view(), name='productionyear-detail'),
 ]

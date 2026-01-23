@@ -4,7 +4,7 @@ from django.db import models
 
 MOVIE_FORMATS = (
     ('CD', 'Płyta CD'),
-    ('W', 'Wersja cyfrowa'),
+    ('BR', 'Blu-ray'),
     ('VHS', 'Kaseta VHS'),
 )
 PLEC_WYBOR = (
@@ -55,7 +55,7 @@ class Movie(models.Model):
     title = models.CharField(max_length=100, help_text="Tytuł filmu.")
     production_year = models.ForeignKey(ProductionYear, null=True, blank=False, on_delete=models.SET_NULL, help_text="Rok produkcji filmu.")
     duration_minutes = models.PositiveIntegerField(help_text="Czas trwania filmu w minutach.")  
-    movie_format = models.CharField(max_length=3, choices=MOVIE_FORMATS, default='W', help_text="Format filmu.")
+    movie_format = models.CharField(max_length=3, choices=MOVIE_FORMATS, default='CD', help_text="Format filmu.")
     director = models.ForeignKey(Director, null=True, blank=False, on_delete=models.SET_NULL, help_text="Reżyser filmu.")
     genre = models.ForeignKey(Genre, null=True, blank=False, on_delete=models.SET_NULL, help_text="Gatunek filmowy.")
     number_copies = models.PositiveIntegerField(default=1, help_text="Cała liczba kopii filmu w wypożyczalni.")
