@@ -4,7 +4,7 @@ from . import views
 
 
 urlpatterns = [
-    path('', views.api_root, name='api-root'),
+    path('', views.menu, name='menu'),
 
     path('register/', views.UserRegisterView.as_view(), name='register'),
     path('login/', obtain_auth_token, name='api_token_auth'),
@@ -22,11 +22,12 @@ urlpatterns = [
     path('rentals/<int:pk>/', views.RentalDetail.as_view(), name='rental-detail'),
     
     path('rentals/active/', views.ActiveRentalsList.as_view(), name='active-rentals'),
-    path('directors/<int:id>/movies/', views.DirectorMoviesList.as_view(), name='director-movies'),
+    
     
     path('directors/', views.DirectorList.as_view(), name='director-list'),
-    path('directors/<int:pk>/', views.DirectorDetail.as_view(), name='director-detail'),
-
+    path('directors/<int:pk>/', views.DirectorDetail.as_view(), name='director-detail'), 
+    path('directors/<int:id>/movies/', views.DirectorMoviesList.as_view(), name='director-movies'),
+    
     path('production_years/', views.ProductionYearList.as_view(), name='productionyear-list'),
     path('production_years/<int:pk>/', views.ProductionYearDetail.as_view(), name='productionyear-detail'),
 ]

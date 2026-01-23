@@ -11,7 +11,7 @@ from rest_framework.response import Response
 from rest_framework.reverse import reverse
 
 @api_view(['GET'])
-def api_root(request, format=None):
+def menu(request, format=None):
     return Response({
         'movies': reverse('movie-list', request=request, format=format),
         'genres': reverse('genre-list', request=request, format=format),
