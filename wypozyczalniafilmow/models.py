@@ -70,12 +70,11 @@ class Movie(models.Model):
     
     def is_rented(self):
         """Sprawdza, czy film jest aktualnie wypożyczony."""
-        active_rentals = self.rental_set.filter(return_date__isnull=True).first()
-        return "Wypożyczony" if active_rentals else "Dostępny"
+        if self.available_copies() > 0:
+            return "Dostępny"
+        else:
+            return "Brak na stanie"
      
-
-       
-
 class Customer(models.Model):
     """Model reprezentujący klienta wypożyczalni i film który aktualnie wypożycza."""
     first_name = models.CharField(max_length=50)
