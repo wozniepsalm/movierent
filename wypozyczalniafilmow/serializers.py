@@ -92,7 +92,8 @@ class RentalSerializer(serializers.ModelSerializer):
     """Serializer dla modelu Rental."""
     class Meta:
         model = Rental
-        fields = '__all__'
+        fields = ['id', 'rental_date', 'return_date', 'customer', 'movie']
+        
     
     def validate(self, data):
         """walidacja całego obiektu wypożyczenia."""
